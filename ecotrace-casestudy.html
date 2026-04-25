@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EcoTrace — UX Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  /* PALET WARNA BARU (Senada dengan index.html) */
+  --bg-main: #FDFCF0;      /* off-white */
+  --bg-alt: #FFFFFF;       /* white */
+  --text-dark: #344054;    /* dark-gray */
+  --text-dim: #667085;     /* medium-gray */
+  --sage: #9CAF88;         /* sage-green */
+  --sage-light: #f2f5ef;   
+  --pastel-blue: #A9CCE3;  /* pastel-blue */
+  --border-light: #EAECF0; /* light-gray */
+  
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'Instrument Sans', system-ui, sans-serif;
+  --hand: 'Caveat', cursive;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-main);
+  color: var(--text-dark);
+  font-family: var(--sans);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── Typography helpers ── */
+.display {
+  font-family: var(--serif);
+  line-height: 1.05;
+  letter-spacing: -.02em;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+.body-text {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-dim);
+}
+
+/* ── Sections ── */
+section { padding: 100px 0; }
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.container-wide {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ── Divider ── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+}
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+
+/* ════════════════════════════════════
+   HERO
+════════════════════════════════════ */
+#hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 30%, rgba(169, 204, 227, 0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(156, 175, 136, 0.15) 0%, transparent 60%),
+    var(--bg-main);
+}
+
+/* Leaf motif SVG backdrop */
+.hero-leaf {
+  position: absolute;
+  top: -60px;
+  right: -80px;
+  width: 520px;
+  opacity: .08;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 60px 32px 80px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.hero-chip {
+  display: inline-block;
+  background: white;
+  border: 1px solid var(--border-light);
+  color: var(--sage);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+}
+
+.hero-title {
+  font-size: clamp(64px, 10vw, 120px);
+  font-family: var(--serif);
+  line-height: .95;
+  margin-bottom: 32px;
+  color: var(--text-dark);
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--sage);
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 520px;
+  margin-bottom: 48px;
+  line-height: 1.65;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
+.meta-key { font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); }
+.meta-val { font-size: 15px; color: var(--text-dark); font-weight: 600; }
+
+.hero-scroll {
+  position: absolute;
+  bottom: 32px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(180deg, var(--pastel-blue), transparent);
+  animation: scrollLine 1.8s ease infinite;
+}
+
+@keyframes scrollLine {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ════════════════════════════════════
+   STATS BAR
+════════════════════════════════════ */
+#stats-bar {
+  padding: 0;
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+}
+
+.stat-cell {
+  padding: 36px 32px;
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-cell:last-child { border-right: none; }
+
+.stat-num {
+  font-family: var(--serif);
+  font-size: 42px;
+  line-height: 1;
+  color: var(--pastel-blue);
+}
+
+.stat-desc { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+
+/* ════════════════════════════════════
+   PROBLEM
+════════════════════════════════════ */
+#problem { background: var(--bg-main); }
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 56px;
+}
+
+.section-num {
+  font-family: var(--serif);
+  font-size: 80px;
+  line-height: .85;
+  color: var(--border-light);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.section-title-block { flex: 1; }
+
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 54px);
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.problem-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, box-shadow .3s;
+}
+
+.problem-card:hover { 
+  border-color: var(--pastel-blue); 
+  box-shadow: 0 4px 20px rgba(169,204,227,0.15);
+}
+
+.problem-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--pastel-blue), transparent);
+}
+
+.problem-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+.problem-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.problem-card p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+
+/* ════════════════════════════════════
+   SOLUTION
+════════════════════════════════════ */
+#solution {
+  background: linear-gradient(180deg, var(--bg-main) 0%, #ffffff 100%);
+}
+
+.solution-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border-light);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 48px;
+}
+
+.solution-cell {
+  background: var(--bg-main);
+  padding: 32px 28px;
+  transition: background .3s;
+}
+
+.solution-cell:hover { background: var(--bg-alt); }
+
+.sol-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(156,175,136,.15);
+  border: 1px solid rgba(156,175,136,.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.solution-cell h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.solution-cell p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+
+/* ════════════════════════════════════
+   PROCESS TIMELINE
+════════════════════════════════════ */
+#process { background: var(--bg-alt); }
+
+.timeline {
+  position: relative;
+  padding-left: 2px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--sage), transparent);
+}
+
+.timeline-item {
+  display: flex;
+  gap: 32px;
+  padding: 0 0 56px 0;
+  position: relative;
+}
+
+.timeline-dot {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--bg-alt);
+  border: 2px solid var(--sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-body { flex: 1; padding-top: 6px; }
+
+.timeline-step {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 6px;
+}
+
+.timeline-body h3 {
+  font-family: var(--serif);
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+.timeline-body p {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ════════════════════════════════════
+   WIREFRAME SHOWCASE
+════════════════════════════════════ */
+#wireframes {
+  background: var(--bg-main);
+  padding: 80px 0;
+}
+
+#wireframes .section-num { color: #d0c8b8; }
+#wireframes .section-title { color: var(--text-dark); }
+#wireframes .label { color: var(--sage); }
+
+.wireframe-annotation {
+  font-family: var(--hand);
+  font-size: 15px;
+  color: #888;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.wf-phone {
+  background: var(--bg-alt);
+  border: 2.5px solid var(--text-dark);
+  border-radius: 24px;
+  padding: 10px;
+  box-shadow: 3px 4px 0 var(--text-dark);
+  position: relative;
+}
+
+.wf-notch {
+  width: 60px;
+  height: 14px;
+  background: var(--text-dark);
+  border-radius: 0 0 8px 8px;
+  margin: 0 auto 6px;
+}
+
+.wf-screen { padding: 0 6px 6px; }
+
+.wf-bar {
+  height: 10px;
+  background: var(--text-dark);
+  border-radius: 2px;
+  margin-bottom: 6px;
+}
+
+.wf-bar.light { background: #bbb; }
+.wf-bar.w60 { width: 60%; }
+.wf-bar.w80 { width: 80%; }
+.wf-bar.w40 { width: 40%; }
+.wf-bar.w70 { width: 70%; }
+.wf-bar.w50 { width: 50%; }
+
+.wf-block {
+  border: 2px solid var(--text-dark);
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.wf-block.dashed { border-style: dashed; border-color: #888; }
+
+.wf-big-block {
+  height: 48px;
+  background: var(--text-dark);
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.wf-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 36px;
+  border-bottom: 1.5px solid var(--text-dark);
+  border-left: 1.5px solid var(--text-dark);
+  padding: 0 2px;
+  margin-bottom: 6px;
+}
+
+.wf-bar-item {
+  flex: 1;
+  background: var(--text-dark);
+  border-radius: 1px 1px 0 0;
+}
+
+.wf-bar-item.g { background: #888; }
+
+.wf-btn {
+  height: 22px;
+  background: var(--text-dark);
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.wf-btn.ghost {
+  background: transparent;
+  border: 2px dashed #888;
+}
+
+.wf-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.wf-nav {
+  border-top: 2px solid var(--text-dark);
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 4px;
+}
+
+.wf-nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #bbb;
+}
+
+.wf-nav-dot.active { background: var(--text-dark); }
+
+.wf-label {
+  font-family: var(--hand);
+  font-size: 12px;
+  color: #555;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+/* ════════════════════════════════════
+   HI-FI PREVIEW (LIGHT THEME NOW)
+════════════════════════════════════ */
+#hifi { background: var(--sage-light); padding: 100px 0; }
+
+.hifi-phones {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: 52px;
+  overflow-x: auto;
+  padding: 20px 0 60px;
+}
+
+.hifi-phone {
+  width: 200px;
+  border-radius: 28px;
+  border: 2px solid var(--sage);
+  background: #ffffff;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08), 0 0 0 1px var(--border-light);
+  transition: transform .3s;
+}
+
+.hifi-phone:hover { transform: translateY(-8px); }
+
+.hifi-phone.featured {
+  transform: translateY(-20px) scale(1.05);
+  border-color: var(--pastel-blue);
+  box-shadow: 0 20px 40px rgba(169,204,227,.3), 0 0 20px rgba(156,175,136,.15);
+}
+
+.hifi-phone.featured:hover { transform: translateY(-28px) scale(1.05); }
+
+.hifi-notch {
+  width: 70px;
+  height: 16px;
+  background: #EAECF0;
+  border-radius: 0 0 10px 10px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hifi-screen { padding: 6px 10px 10px; }
+
+/* Home screen */
+.hifi-greeting { font-size: 9px; color: var(--text-dark); margin-bottom: 6px; font-weight: 600; }
+
+.hifi-points-card {
+  background: var(--bg-main);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.hifi-points-label { font-size: 7px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; }
+.hifi-points-val { font-size: 22px; font-family: var(--serif); color: var(--sage); line-height: 1.1; }
+.hifi-points-sub { font-size: 7px; color: var(--text-dim); }
+
+.hifi-mini-chart {
+  height: 36px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 4px 6px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-bottom: 8px;
+  background: #fcfcfc;
+}
+
+.hifi-bar {
+  flex: 1;
+  background: var(--pastel-blue);
+  border-radius: 1px 1px 0 0;
+  opacity: .5;
+}
+.hifi-bar.hi { opacity: 1; background: var(--sage); }
+
+.hifi-actions { display: flex; gap: 6px; margin-bottom: 8px; }
+
+.hifi-action-btn {
+  flex: 1;
+  padding: 7px 4px;
+  border-radius: 8px;
+  font-size: 8px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.hifi-action-btn.primary { background: var(--sage); color: white; }
+.hifi-action-btn.secondary { background: var(--bg-main); color: var(--text-dark); border: 1px solid var(--border-light); }
+
+.hifi-tip {
+  background: #f8fbf8;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 7px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+/* Setor screen */
+.hifi-setor-header { font-size: 11px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; border-bottom: 1px solid var(--border-light); padding-bottom: 6px; text-align:center; }
+
+.hifi-qr-box {
+  height: 60px;
+  border: 2px dashed var(--pastel-blue);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-bottom: 8px;
+  background: #f4f8fb;
+}
+
+.hifi-qr-box span { font-size: 7px; color: var(--text-dim); }
+
+.hifi-chips { display: flex; flex-wrap: wrap; justify-content:center; gap: 4px; margin-bottom: 8px; }
+.hifi-chip {
+  font-size: 7px;
+  padding: 3px 7px;
+  border-radius: 20px;
+  border: 1px solid var(--sage);
+  color: var(--sage);
+}
+.hifi-chip.sel { background: var(--sage); color: white; }
+
+/* Riwayat screen */
+.hifi-level {
+  background: var(--bg-main);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.hifi-level-name { font-size: 9px; font-weight: 700; color: var(--text-dark); }
+.hifi-level-bar-bg { height: 4px; background: var(--border-light); border-radius: 2px; margin-top: 6px; }
+.hifi-level-bar-fill { height: 100%; width: 62%; background: var(--sage); border-radius: 2px; }
+
+.hifi-list-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.hifi-list-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: #f4f8fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.hifi-list-info { flex: 1; }
+.hifi-list-name { font-size: 8px; font-weight: 700; color: var(--text-dark); }
+.hifi-list-date { font-size: 6px; color: var(--text-dim); }
+.hifi-list-pts { font-size: 8px; font-weight: 700; color: var(--sage); }
+
+/* Data screen */
+.hifi-line-wrap {
+  height: 50px;
+  border-left: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hifi-line-wrap svg { width: 100%; height: 100%; }
+
+.hifi-co2 {
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hifi-donut {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 5px solid var(--sage);
+  border-right-color: var(--pastel-blue);
+  flex-shrink: 0;
+}
+
+.hifi-co2-val { font-size: 14px; font-family: var(--serif); color: var(--text-dark); }
+.hifi-co2-sub { font-size: 7px; color: var(--text-dim); }
+
+/* Nav */
+.hifi-nav {
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  padding: 6px 0 4px;
+  justify-content: space-around;
+}
+
+.hifi-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.hifi-nav-icon { font-size: 12px; }
+.hifi-nav-lbl { font-size: 6px; color: var(--text-dim); }
+.hifi-nav-item.active .hifi-nav-lbl { color: var(--sage); font-weight:bold; }
+.hifi-nav-item.active .hifi-nav-icon { filter: drop-shadow(0 0 4px rgba(156,175,136,.5)); }
+
+.featured-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--pastel-blue);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════
+   DECISIONS
+════════════════════════════════════ */
+#decisions { background: var(--bg-alt); }
+
+.decisions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.decision-card {
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 28px;
+  transition: border-color .3s, background .3s;
+}
+
+.decision-card:hover {
+  border-color: var(--sage);
+  background: #ffffff;
+}
+
+.decision-q {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.decision-card h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.decision-card p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+.decision-verdict {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(156,175,136,.1);
+  border-left: 2px solid var(--sage);
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  color: var(--sage);
+  font-weight: 600;
+}
+
+/* ════════════════════════════════════
+   IMPACT
+════════════════════════════════════ */
+#impact {
+  background: var(--bg-main);
+  padding: 100px 0;
+}
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-light);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 48px;
+}
+
+.impact-cell {
+  background: var(--bg-alt);
+  padding: 40px 28px;
+  text-align: center;
+}
+
+.impact-num {
+  font-family: var(--serif);
+  font-size: 52px;
+  color: var(--sage);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.impact-label { font-size: 13px; color: var(--text-dim); }
+
+/* ════════════════════════════════════
+   FOOTER & LIVE DEMO
+════════════════════════════════════ */
+footer {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border-light);
+  padding: 60px 32px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 32px;
+  color: var(--text-dark);
+  margin-bottom: 16px;
+}
+
+.footer-logo em { color: var(--sage); font-style: italic; }
+
+.footer-tagline {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: .05em;
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s, color .2s;
+}
+
+.footer-link:hover { color: var(--sage); border-bottom-color: var(--sage); }
+
+.footer-copy {
+  margin-top: 40px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .problem-grid, .decisions-grid { grid-template-columns: 1fr; }
+  .solution-grid { grid-template-columns: 1fr; }
+  .wf-grid { grid-template-columns: 1fr 1fr; }
+  .impact-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .hero-title { font-size: 52px; }
+  .hifi-phones { gap: 12px; }
+  .hifi-phone { width: 160px; }
+}
+
+@media (max-width: 420px) {
+  .wf-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+
+  <svg class="hero-leaf" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M200 10 C300 80 380 200 350 350 C320 450 150 480 80 380 C20 290 40 140 200 10Z" fill="#9CAF88"/>
+    <path d="M200 10 L200 480" stroke="#9CAF88" stroke-width="2"/>
+    <path d="M200 100 C240 130 270 170 260 210" stroke="#9CAF88" stroke-width="1.5"/>
+    <path d="M200 160 C160 190 130 230 150 270" stroke="#9CAF88" stroke-width="1.5"/>
+    <path d="M200 220 C235 248 255 290 245 330" stroke="#9CAF88" stroke-width="1.5"/>
+  </svg>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow reveal">
+      <span class="hero-chip">UX Case Study</span>
+      <span class="hero-chip">Mobile App</span>
+      <span class="hero-chip">2025</span>
+    </div>
+
+    <h1 class="hero-title reveal reveal-delay-1">
+      Eco<em>Trace</em><br>
+    </h1>
+    <p style="font-family:'DM Serif Display',serif; font-size:clamp(20px,3vw,32px); color:var(--text-dim); font-style:italic; margin-bottom:28px;" class="reveal reveal-delay-2">
+      Memilah sampah jadi gampang, seru, dan bermakna.
+    </p>
+
+    <p class="hero-sub reveal reveal-delay-3">
+      Studi kasus desain aplikasi mobile gamifikasi daur ulang sampah — dari masalah nyata di lapangan sampai antarmuka yang siap dipakai warga Indonesia.
+    </p>
+
+    <div class="hero-meta reveal reveal-delay-4">
+      <div class="meta-item"><span class="meta-key">Peran</span><span class="meta-val">UI/UX Designer</span></div>
+      <div class="meta-item"><span class="meta-key">Platform</span><span class="meta-val">Mobile (Android/iOS)</span></div>
+      <div class="meta-item"><span class="meta-key">Tools</span><span class="meta-val">Figma · FigJam · Notion</span></div>
+      <div class="meta-item"><span class="meta-key">Durasi</span><span class="meta-val">3 Minggu</span></div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<div id="stats-bar">
+  <div class="stats-grid">
+    <div class="stat-cell reveal">
+      <span class="stat-num">70%</span>
+      <span class="stat-desc">sampah Indonesia tidak terkelola dengan baik (KLHK 2023)</span>
+    </div>
+    <div class="stat-cell reveal reveal-delay-1">
+      <span class="stat-num">6.5 jt</span>
+      <span class="stat-desc">ton sampah dihasilkan warga Indonesia per tahun</span>
+    </div>
+    <div class="stat-cell reveal reveal-delay-2">
+      <span class="stat-num">&lt;5%</span>
+      <span class="stat-desc">warga yang aktif menggunakan bank sampah konvensional</span>
+    </div>
+    <div class="stat-cell reveal reveal-delay-3">
+      <span class="stat-num">0</span>
+      <span class="stat-desc">aplikasi mobile gamifikasi sampah yang relevan secara lokal</span>
+    </div>
+  </div>
+</div>
+
+<section id="problem">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <div class="section-title-block">
+        <div class="label" style="margin-bottom:8px;">Problem</div>
+        <h2 class="section-title">Kenapa Bank Sampah<br>Konvensional Gagal?</h2>
+      </div>
+    </div>
+
+    <p class="body-text reveal" style="margin-bottom:40px; max-width:620px;">
+      Bank sampah ada di mana-mana — tapi sepi. Setelah riset dan wawancara singkat dengan 8 warga di Jakarta Selatan, gua menemukan 4 hambatan utama yang bikin orang males balik lagi.
+    </p>
+
+    <div class="problem-grid">
+      <div class="problem-card reveal reveal-delay-1">
+        <span class="problem-icon">🕐</span>
+        <h3>Proses Ribet & Lambat</h3>
+        <p>Antre lama, pencatatan masih manual di buku fisik, tidak ada konfirmasi digital. Warga merasa waktu mereka terbuang sia-sia.</p>
+      </div>
+      <div class="problem-card reveal reveal-delay-2">
+        <span class="problem-icon">🔇</span>
+        <h3>Tidak Ada Feedback Loop</h3>
+        <p>Warga setor sampah, pulang — selesai. Tidak ada notifikasi poin, tidak ada visual dampak lingkungan. Motivasi langsung menguap.</p>
+      </div>
+      <div class="problem-card reveal reveal-delay-3">
+        <span class="problem-icon">📍</span>
+        <h3>Informasi Tersebar</h3>
+        <p>Jadwal buka bank sampah disebarkan lewat grup WhatsApp RT. Mudah ketinggalan, tidak terstruktur, tidak ada satu platform resmi.</p>
+      </div>
+      <div class="problem-card reveal reveal-delay-4">
+        <span class="problem-icon">🎯</span>
+        <h3>Nol Insentif</h3>
+        <p>Orang membutuhkan alasan untuk berubah perilaku. Tanpa reward yang nyata dan terasa, partisipasi tidak akan konsisten.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="solution">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <div class="section-title-block">
+        <div class="label" style="margin-bottom:8px;">Solution</div>
+        <h2 class="section-title">EcoTrace: Daur Ulang<br><em>yang Bikin Nagih</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text reveal" style="max-width:620px;">
+      EcoTrace menjawab semua hambatan di atas dengan 3 fitur inti yang saling terhubung: kemudahan setoran, gamifikasi yang bermakna, dan data dampak yang bisa dirasakan.
+    </p>
+
+    <div class="solution-grid reveal reveal-delay-1">
+      <div class="solution-cell">
+        <div class="sol-icon">♻️</div>
+        <h3>Setor Digital</h3>
+        <p>Scan QR di bank sampah lokal atau input manual. Poin dihitung otomatis. Tidak perlu antre pencatatan.</p>
+      </div>
+      <div class="solution-cell">
+        <div class="sol-icon">🏆</div>
+        <h3>Gamifikasi & Reward</h3>
+        <p>Level sistem (Pemula → Eco Warrior), poin yang bisa ditukar reward nyata, dan leaderboard komunitas RT/RW.</p>
+      </div>
+      <div class="solution-cell">
+        <div class="sol-icon">📊</div>
+        <h3>Jejak Karbon Visual</h3>
+        <p>Grafik tren bulanan, estimasi CO₂ yang berhasil dikurangi, dan perbandingan kontribusi dengan tetangga.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="process">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <div class="section-title-block">
+        <div class="label" style="margin-bottom:8px;">Design Process</div>
+        <h2 class="section-title">Dari Asumsi<br>ke Antarmuka</h2>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-dot">🔍</div>
+        <div class="timeline-body">
+          <div class="timeline-step">Tahap 1 — Riset</div>
+          <h3>Understand the Problem</h3>
+          <p>Wawancara 8 warga Jakarta Selatan, observasi langsung ke 2 bank sampah RT, dan audit aplikasi serupa (Rekosistem, Waste4Change). Tujuan: menemukan pain point yang nyata, bukan asumsi.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal reveal-delay-1">
+        <div class="timeline-dot">🗺️</div>
+        <div class="timeline-body">
+          <div class="timeline-step">Tahap 2 — Define</div>
+          <h3>User Flow & Information Architecture</h3>
+          <p>Memetakan alur pengguna dari splash screen sampai reward redemption. Memastikan setiap layar punya satu tujuan utama — tidak lebih, tidak kurang.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal reveal-delay-2">
+        <div class="timeline-dot">✏️</div>
+        <div class="timeline-body">
+          <div class="timeline-step">Tahap 3 — Lo-Fi Wireframe</div>
+          <h3>Corat-Coret di Kertas Digital</h3>
+          <p>Empat layar utama dikerjakan dalam format sketsa (low-fidelity) — fokus pada tata letak dan hierarki informasi, bukan estetika. Iterasi cepat tanpa terikat warna atau font.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal reveal-delay-3">
+        <div class="timeline-dot">🎨</div>
+        <div class="timeline-body">
+          <div class="timeline-step">Tahap 4 — Hi-Fi Design</div>
+          <h3>Dari Sketsa ke Piksel</h3>
+          <p>Wireframe diwujudkan dengan sistem desain di Figma: color palette terang yang bersih, tipografi yang readable di layar kecil, dan komponen yang konsisten.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal reveal-delay-4">
+        <div class="timeline-dot">📦</div>
+        <div class="timeline-body">
+          <div class="timeline-step">Tahap 5 — Handoff</div>
+          <h3>Dokumentasi & Studi Kasus</h3>
+          <p>Seluruh keputusan desain didokumentasikan, studi kasus ditulis, dan portfolio siap dipublish ke Behance/Notion sebagai deliverable portofolio.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="wireframes">
+  <div class="container-wide">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <div class="section-title-block">
+        <div class="label" style="margin-bottom:8px;">Lo-Fi Wireframe</div>
+        <h2 class="section-title">Sketsa Sebelum<br>Tampil Bagus</h2>
+      </div>
+    </div>
+
+    <p class="body-text reveal" style="max-width:580px; margin-bottom:0;">
+      Wireframe kasar ini dibuat tanpa warna — hanya tata letak dan hierarki. Tujuannya satu: pastikan aplikasinya gampang dipakai sebelum kita bikin ia terlihat cantik.
+    </p>
+
+    <div class="wf-grid">
+
+      <div class="reveal reveal-delay-1">
+        <div class="wf-phone">
+          <div class="wf-notch"></div>
+          <div class="wf-screen">
+            <div class="wf-bar w60 light" style="height:8px; margin-bottom:8px;"></div>
+            <div class="wf-big-block" style="height:52px; border-radius:6px;"></div>
+            <div style="height:4px;"></div>
+            <div class="wf-block" style="padding:4px;">
+              <div class="wf-chart">
+                <div class="wf-bar-item" style="height:40%"></div>
+                <div class="wf-bar-item g" style="height:60%"></div>
+                <div class="wf-bar-item" style="height:50%"></div>
+                <div class="wf-bar-item g" style="height:80%"></div>
+                <div class="wf-bar-item" style="height:65%"></div>
+                <div class="wf-bar-item g" style="height:90%"></div>
+                <div class="wf-bar-item" style="height:70%"></div>
+              </div>
+            </div>
+            <div style="height:6px;"></div>
+            <div class="wf-two-col">
+              <div class="wf-btn"></div>
+              <div class="wf-btn ghost"></div>
+            </div>
+            <div class="wf-block dashed" style="height:20px;"></div>
+          </div>
+          <div class="wf-nav">
+            <div class="wf-nav-dot active"></div>
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot"></div>
+          </div>
+        </div>
+        <div class="wf-label">🏠 Beranda</div>
+        <div class="wireframe-annotation">↑ CTA di bawah grafik</div>
+      </div>
+
+      <div class="reveal reveal-delay-2">
+        <div class="wf-phone">
+          <div class="wf-notch"></div>
+          <div class="wf-screen">
+            <div class="wf-bar w70" style="height:10px; margin-bottom:8px;"></div>
+            <div class="wf-two-col" style="margin-bottom:6px;">
+              <div class="wf-btn" style="height:18px;"></div>
+              <div class="wf-btn ghost" style="height:18px;"></div>
+            </div>
+            <div class="wf-block crosshatch" style="height:66px; display:flex; align-items:center; justify-content:center; font-size:18px; border: 2px dashed #888; border-radius:6px;">📷</div>
+            <div style="height:6px;"></div>
+            <div class="wf-bar w40 light" style="height:7px; margin-bottom:5px;"></div>
+            <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px;">
+              <div style="border:1.5px dashed #888; border-radius:12px; height:14px; width:40px;"></div>
+              <div style="border:1.5px solid var(--text-dark); border-radius:12px; height:14px; width:36px; background:var(--text-dark);"></div>
+              <div style="border:1.5px dashed #888; border-radius:12px; height:14px; width:32px;"></div>
+            </div>
+            <div class="wf-btn" style="height:22px;"></div>
+          </div>
+          <div class="wf-nav">
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot active"></div>
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot"></div>
+          </div>
+        </div>
+        <div class="wf-label">♻️ Setor Sampah</div>
+        <div class="wireframe-annotation">↑ QR default, manual fallback</div>
+      </div>
+
+      <div class="reveal reveal-delay-3">
+        <div class="wf-phone">
+          <div class="wf-notch"></div>
+          <div class="wf-screen">
+            <div class="wf-bar w80" style="height:10px; margin-bottom:8px;"></div>
+            <div class="wf-block" style="padding:8px; margin-bottom:6px;">
+              <div class="wf-bar w50" style="height:7px; margin-bottom:4px;"></div>
+              <div style="background:var(--text-dark); height:6px; width:60%; border-radius:2px;"></div>
+              <div class="wf-bar light w80" style="height:5px; margin-top:5px;"></div>
+            </div>
+            <div class="wf-bar w40 light" style="height:7px; margin-bottom:5px;"></div>
+            <div class="wf-block" style="padding:5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <div style="width:16px; height:16px; border:1.5px solid var(--text-dark); border-radius:3px; flex-shrink:0;"></div>
+              <div style="flex:1;"><div class="wf-bar w70" style="height:6px; margin-bottom:3px;"></div><div class="wf-bar w40 light" style="height:5px;"></div></div>
+              <div style="border:1.5px solid var(--text-dark); border-radius:10px; height:10px; width:28px;"></div>
+            </div>
+            <div class="wf-block" style="padding:5px; display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+              <div style="width:16px; height:16px; border:1.5px solid var(--text-dark); border-radius:3px; flex-shrink:0;"></div>
+              <div style="flex:1;"><div class="wf-bar w80" style="height:6px; margin-bottom:3px;"></div><div class="wf-bar w50 light" style="height:5px;"></div></div>
+              <div style="border:1.5px solid var(--text-dark); border-radius:10px; height:10px; width:28px;"></div>
+            </div>
+            <div class="wf-bar w40 light" style="height:7px; margin-bottom:5px; margin-top:4px;"></div>
+            <div class="wf-block" style="padding:6px; display:flex; align-items:center; gap:5px;">
+              <div style="width:22px; height:22px; border:1.5px dashed #888; border-radius:3px; flex-shrink:0;"></div>
+              <div style="flex:1;"><div class="wf-bar w60" style="height:6px; margin-bottom:3px;"></div><div class="wf-bar w40 light" style="height:5px;"></div></div>
+              <div class="wf-btn ghost" style="height:14px; width:28px; padding:0;"></div>
+            </div>
+          </div>
+          <div class="wf-nav">
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot active"></div>
+            <div class="wf-nav-dot"></div>
+          </div>
+        </div>
+        <div class="wf-label">🏆 Riwayat</div>
+        <div class="wireframe-annotation">↑ Level bar + list + reward</div>
+      </div>
+
+      <div class="reveal reveal-delay-4">
+        <div class="wf-phone">
+          <div class="wf-notch"></div>
+          <div class="wf-screen">
+            <div class="wf-bar w70" style="height:10px; margin-bottom:8px;"></div>
+            <div class="wf-block" style="padding:6px; margin-bottom:6px;">
+              <div class="wf-bar w50 light" style="height:6px; margin-bottom:5px;"></div>
+              <div style="border-left:1.5px solid var(--text-dark); border-bottom:1.5px solid var(--text-dark); height:40px; position:relative; margin-bottom:3px;">
+                <svg viewBox="0 0 100 40" style="width:100%;height:100%;" preserveAspectRatio="none">
+                  <polyline points="0,35 20,25 40,30 60,15 80,20 100,5" fill="none" stroke="var(--text-dark)" stroke-width="2"/>
+                </svg>
+              </div>
+            </div>
+            <div class="wf-block" style="padding:6px; display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <div style="width:28px; height:28px; border-radius:50%; border:4px solid var(--text-dark); border-right-color:#888; flex-shrink:0;"></div>
+              <div style="flex:1;"><div class="wf-bar w60" style="height:8px; margin-bottom:4px;"></div><div class="wf-bar w80 light" style="height:6px;"></div></div>
+            </div>
+            <div class="wf-block" style="padding:6px;">
+              <div class="wf-bar w50 light" style="height:6px; margin-bottom:5px;"></div>
+              <div class="wf-chart" style="height:30px;">
+                <div class="wf-bar-item" style="height:50%"></div>
+                <div class="wf-bar-item g" style="height:70%"></div>
+                <div class="wf-bar-item" style="height:40%"></div>
+                <div class="wf-bar-item g" style="height:85%"></div>
+                <div class="wf-bar-item" style="height:60%"></div>
+                <div class="wf-bar-item g" style="height:90%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="wf-nav">
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot"></div>
+            <div class="wf-nav-dot active"></div>
+          </div>
+        </div>
+        <div class="wf-label">📊 Visualisasi Data</div>
+        <div class="wireframe-annotation">↑ Line + donut + bar chart</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="hifi">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num" style="color:white;">05</span>
+      <div class="section-title-block">
+        <div class="label" style="margin-bottom:8px;">High-Fidelity Design</div>
+        <h2 class="section-title">Wireframe<br><em>Bertemu Warna</em></h2>
+      </div>
+    </div>
+
+    <p class="body-text reveal" style="max-width:560px;">
+      Earth-tone hijau dan biru pastel sebagai primary — mewakili alam dengan kesan yang bersih dan modern. Light background membuat interface terasa lebih lega dan bersahabat.
+    </p>
+  </div>
+
+  <div class="hifi-phones">
+
+    <div class="hifi-phone reveal reveal-delay-1">
+      <div class="hifi-notch"></div>
+      <div class="hifi-screen">
+        <div class="hifi-greeting">👋 Halo, Budi!</div>
+        <div class="hifi-points-card">
+          <div class="hifi-points-label">Total EcoPoints</div>
+          <div class="hifi-points-val">1.250 ⬡</div>
+          <div class="hifi-points-sub">+80 minggu ini</div>
+        </div>
+        <div class="hifi-mini-chart">
+          <div class="hifi-bar" style="height:40%"></div>
+          <div class="hifi-bar" style="height:60%"></div>
+          <div class="hifi-bar" style="height:45%"></div>
+          <div class="hifi-bar" style="height:75%"></div>
+          <div class="hifi-bar" style="height:55%"></div>
+          <div class="hifi-bar hi" style="height:90%"></div>
+          <div class="hifi-bar" style="height:70%"></div>
+        </div>
+        <div class="hifi-actions">
+          <div class="hifi-action-btn primary">♻️ Setor</div>
+          <div class="hifi-action-btn secondary">🎁 Tukar Poin</div>
+        </div>
+        <div class="hifi-tip">💡 Bank Sampah RT-03 buka Sabtu 08.00</div>
+      </div>
+      <div class="hifi-nav">
+        <div class="hifi-nav-item active"><span class="hifi-nav-icon">🏠</span><span class="hifi-nav-lbl">Beranda</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">♻️</span><span class="hifi-nav-lbl">Setor</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">🏆</span><span class="hifi-nav-lbl">Riwayat</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">📊</span><span class="hifi-nav-lbl">Data</span></div>
+      </div>
+    </div>
+
+    <div class="hifi-phone featured reveal">
+      <div class="featured-badge">FEATURED</div>
+      <div class="hifi-notch"></div>
+      <div class="hifi-screen">
+        <div class="hifi-setor-header">♻️ Setor Sampah</div>
+        <div class="hifi-chips">
+          <div class="hifi-chip sel">📷 Scan QR</div>
+          <div class="hifi-chip">✏️ Manual</div>
+        </div>
+        <div class="hifi-qr-box">
+          <span style="font-size:20px;">📷</span>
+          <span>Arahkan ke QR Bank Sampah</span>
+        </div>
+        <div class="hifi-chips">
+          <div class="hifi-chip">🧴 Plastik</div>
+          <div class="hifi-chip sel">📄 Kertas</div>
+          <div class="hifi-chip">🫙 Kaca</div>
+        </div>
+        <div style="background:#f4f8fb; border:1px solid var(--border-light); border-radius:6px; padding:6px 8px; margin-bottom:8px;">
+          <div style="font-size:7px; color:var(--text-dim); margin-bottom:3px;">Estimasi Berat</div>
+          <div style="font-size:13px; color:var(--sage); font-weight:700;">1.2 kg</div>
+        </div>
+        <div style="background:var(--sage); border-radius:8px; padding:8px; text-align:center; font-size:9px; font-weight:700; color:white;">✅ Konfirmasi — +18 Poin</div>
+      </div>
+      <div class="hifi-nav">
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">🏠</span><span class="hifi-nav-lbl">Beranda</span></div>
+        <div class="hifi-nav-item active"><span class="hifi-nav-icon">♻️</span><span class="hifi-nav-lbl">Setor</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">🏆</span><span class="hifi-nav-lbl">Riwayat</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">📊</span><span class="hifi-nav-lbl">Data</span></div>
+      </div>
+    </div>
+
+    <div class="hifi-phone reveal reveal-delay-1">
+      <div class="hifi-notch"></div>
+      <div class="hifi-screen">
+        <div class="hifi-level">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="hifi-level-name">⭐ Eco Hero</div>
+            <div style="font-size:7px; background:#f2f5ef; border:1px solid var(--sage); border-radius:10px; padding:2px 6px; color:var(--sage);">Lv.3</div>
+          </div>
+          <div class="hifi-level-bar-bg"><div class="hifi-level-bar-fill"></div></div>
+          <div style="font-size:6px; color:var(--text-dim); margin-top:3px;">620/1000 XP</div>
+        </div>
+        <div style="font-size:7px; font-weight:700; color:var(--sage); text-transform:uppercase; letter-spacing:.1em; margin-bottom:4px;">Riwayat</div>
+        <div class="hifi-list-row">
+          <div class="hifi-list-icon">🧴</div>
+          <div class="hifi-list-info"><div class="hifi-list-name">Plastik — 0.8kg</div><div class="hifi-list-date">Sab 19 Apr</div></div>
+          <div class="hifi-list-pts">+24</div>
+        </div>
+        <div class="hifi-list-row">
+          <div class="hifi-list-icon">📄</div>
+          <div class="hifi-list-info"><div class="hifi-list-name">Kertas — 1.2kg</div><div class="hifi-list-date">Rab 16 Apr</div></div>
+          <div class="hifi-list-pts">+18</div>
+        </div>
+        <div class="hifi-list-row">
+          <div class="hifi-list-icon">🫙</div>
+          <div class="hifi-list-info"><div class="hifi-list-name">Kaca — 0.5kg</div><div class="hifi-list-date">Sen 14 Apr</div></div>
+          <div class="hifi-list-pts">+15</div>
+        </div>
+        <div style="font-size:7px; font-weight:700; color:var(--sage); text-transform:uppercase; letter-spacing:.1em; margin:6px 0 4px;">Reward</div>
+        <div style="display:flex; align-items:center; gap:6px; padding:5px; border:1px solid var(--border-light); border-radius:6px; background:#fbfcf9;">
+          <span style="font-size:14px;">☕</span>
+          <div style="flex:1;"><div style="font-size:8px; font-weight:700; color:var(--text-dark);">Kopi Gratis</div><div style="font-size:6px; color:var(--text-dim);">500 pts</div></div>
+          <div style="font-size:7px; border:1px solid var(--sage); border-radius:4px; padding:2px 5px; color:var(--sage);">Tukar</div>
+        </div>
+      </div>
+      <div class="hifi-nav">
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">🏠</span><span class="hifi-nav-lbl">Beranda</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">♻️</span><span class="hifi-nav-lbl">Setor</span></div>
+        <div class="hifi-nav-item active"><span class="hifi-nav-icon">🏆</span><span class="hifi-nav-lbl">Riwayat</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">📊</span><span class="hifi-nav-lbl">Data</span></div>
+      </div>
+    </div>
+
+    <div class="hifi-phone reveal reveal-delay-2">
+      <div class="hifi-notch"></div>
+      <div class="hifi-screen">
+        <div style="font-size:9px; font-weight:700; color:var(--text-dark); margin-bottom:8px; border-bottom:1px solid var(--border-light); padding-bottom:5px;">📊 Visualisasi Data</div>
+        <div style="font-size:6px; color:var(--sage); text-transform:uppercase; letter-spacing:.1em; margin-bottom:4px;">Tren Bulanan (kg)</div>
+        <div class="hifi-line-wrap">
+          <svg viewBox="0 0 100 50" preserveAspectRatio="none">
+            <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9CAF88" stop-opacity=".3"/><stop offset="100%" stop-color="#9CAF88" stop-opacity="0"/></linearGradient></defs>
+            <polygon points="0,45 20,35 40,40 60,20 80,28 100,8 100,50 0,50" fill="url(#lg)"/>
+            <polyline points="0,45 20,35 40,40 60,20 80,28 100,8" fill="none" stroke="var(--sage)" stroke-width="2.5"/>
+            <circle cx="100" cy="8" r="3" fill="var(--sage)"/>
+          </svg>
+        </div>
+        <div class="hifi-co2" style="margin-bottom:8px;">
+          <div class="hifi-donut"></div>
+          <div>
+            <div class="hifi-co2-val">12.4 kg</div>
+            <div class="hifi-co2-sub">CO₂ dikurangi bulan ini</div>
+            <div style="font-size:7px; color:var(--sage); margin-top:2px;">≈ 🌳 0.6 pohon/bulan</div>
+          </div>
+        </div>
+        <div style="font-size:6px; color:var(--sage); text-transform:uppercase; letter-spacing:.1em; margin-bottom:4px;">RT Terbaik Minggu Ini</div>
+        <div style="background:#f4f8fb; border:1px solid var(--border-light); border-radius:6px; padding:5px 7px; display:flex; align-items:center; gap:6px;">
+          <span style="font-size:14px;">🥇</span>
+          <div><div style="font-size:8px; font-weight:700; color:var(--text-dark);">RT-04 — 42 kg</div><div style="font-size:6px; color:var(--text-dim);">+12% dari minggu lalu</div></div>
+        </div>
+      </div>
+      <div class="hifi-nav">
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">🏠</span><span class="hifi-nav-lbl">Beranda</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">♻️</span><span class="hifi-nav-lbl">Setor</span></div>
+        <div class="hifi-nav-item"><span class="hifi-nav-icon">🏆</span><span class="hifi-nav-lbl">Riwayat</span></div>
+        <div class="hifi-nav-item active"><span class="hifi-nav-icon">📊</span><span class="hifi-nav-lbl">Data</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="decisions">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num">06</span>
+      <div class="section-title-block">
+        <div class="label" style="margin-bottom:8px;">Design Decisions</div>
+        <h2 class="section-title">Kenapa Diputuskan<br>Seperti Ini?</h2>
+      </div>
+    </div>
+
+    <div class="decisions-grid">
+      <div class="decision-card reveal reveal-delay-1">
+        <div class="decision-q">Keputusan 01</div>
+        <h3>QR Scan sebagai Default</h3>
+        <p>Input manual adalah fallback, bukan opsi utama. Pengguna yang datang ke bank sampah fisik sudah siap — satu scan lebih cepat dari mengisi form 4 field.</p>
+        <div class="decision-verdict">✓ Mengurangi friction di titik konversi terpenting</div>
+      </div>
+
+      <div class="decision-card reveal reveal-delay-2">
+        <div class="decision-q">Keputusan 02</div>
+        <h3>Hanya 2 CTA di Beranda</h3>
+        <p>"Setor Sampah" dan "Tukar Poin" — dua aksi inti yang mewakili loop utama aplikasi. Lebih dari 2 tombol di halaman utama terbukti meningkatkan decision paralysis.</p>
+        <div class="decision-verdict">✓ Clarity lebih penting dari completeness di home screen</div>
+      </div>
+
+      <div class="decision-card reveal reveal-delay-3">
+        <div class="decision-q">Keputusan 03</div>
+        <h3>CO₂ Dikonversi ke "Pohon"</h3>
+        <p>Angka "12.4 kg CO₂" tidak terasa nyata bagi kebanyakan orang. "Setara 0.6 pohon per bulan" memberikan konteks yang bisa dirasakan secara emosional.</p>
+        <div class="decision-verdict">✓ Data yang meaningful > data yang akurat tapi abstrak</div>
+      </div>
+
+      <div class="decision-card reveal reveal-delay-4">
+        <div class="decision-q">Keputusan 04</div>
+        <h3>Light Theme dengan Hijau Earth-Tone</h3>
+        <p>Light mode memberikan kesan bersih, lega, dan transparan. Kombinasi warna earth-tone mewakili alam dengan sentuhan modern yang bersahabat untuk mata.</p>
+        <div class="decision-verdict">✓ Estetika harus memperkuat nilai produk ramah lingkungan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="impact">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-num" style="color:white;">07</span>
+      <div class="section-title-block">
+        <div class="label" style="margin-bottom:8px;">Projected Impact</div>
+        <h2 class="section-title">Kalau Diluncurkan,<br><em>Ini Targetnya</em></h2>
+      </div>
+    </div>
+
+    <div class="impact-grid reveal">
+      <div class="impact-cell">
+        <div class="impact-num">3×</div>
+        <div class="impact-label">peningkatan frekuensi setoran warga aktif vs bank sampah konvensional</div>
+      </div>
+      <div class="impact-cell">
+        <div class="impact-num">60%</div>
+        <div class="impact-label">warga baru yang bergabung karena fitur reward & gamifikasi</div>
+      </div>
+      <div class="impact-cell">
+        <div class="impact-num">50 kg</div>
+        <div class="impact-label">rata-rata sampah terkumpul per RT per bulan di tahun pertama</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div style="width: 100%; max-width: 900px; margin: 60px auto; padding: 20px; background-color: var(--bg-alt); border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center;">
+        
+        <div style="width: 64px; height: 64px; background-color: var(--sage-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 1px solid var(--sage);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </div>
+
+        <h3 style="font-family: var(--serif); font-size: 28px; color: var(--text-dark); margin-bottom: 12px;">Coba Langsung Prototype Interaktifnya</h3>
+        <p style="font-family: var(--sans); font-size: 16px; color: var(--text-dim); max-width: 500px; margin-bottom: 30px; line-height: 1.6;">
+            Karena alasan keamanan dari server Vercel, prototype interaktif ini lebih optimal jika dijalankan secara penuh di tab baru.
+        </p>
+
+        <a href="https://v0-interactive-web-jdcjtpxva-ardiaaww-9757s-projects.vercel.app/" target="_blank" style="font-family: var(--sans); font-size: 16px; color: white; background-color: var(--sage); padding: 14px 32px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: transform 0.2s, background-color 0.2s; box-shadow: 0 4px 10px rgba(156,175,136,0.3);" onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#7d8f6b'" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='var(--sage)'">
+            Buka Live Demo 🚀
+        </a>
+        
+    </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Eco<em>Trace</em></div>
+  <div class="footer-tagline">UI/UX Case Study · Mobile App Design · 2025</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://www.behance.net/are.dyy/ecotrace" target="_blank">Behance</a>
+    <a class="footer-link" href="#">Notion</a>
+    <a class="footer-link" href="#">Figma Prototype</a>
+    <a class="footer-link" href="#">Portfolio</a>
+  </div>
+  <div class="footer-copy">Dibuat dengan ❤️ untuk portofolio Ardi · EcoTrace adalah konsep desain fiktif</div>
+</footer>
+
+<script>
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+revealEls.forEach(el => io.observe(el));
+
+// Trigger hero items immediately
+document.querySelectorAll('#hero .reveal').forEach(el => {
+  setTimeout(() => el.classList.add('visible'), 100);
+});
+</script>
+</body>
+</html>
