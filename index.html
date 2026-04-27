@@ -75,8 +75,10 @@
       /* === SCROLL PROGRESS === */
       #scroll-progress { position:fixed; top:0; left:0; height:3px; width:0%; background:linear-gradient(90deg,var(--accent-green),var(--accent-blue)); z-index:9999; border-radius:0 2px 2px 0; transition:width .08s linear; }
 
-      /* === CUSTOM CURSOR === */
-      * { cursor: none !important; }
+      /* === CUSTOM CURSOR (desktop only) === */
+      @media (pointer:fine) {
+        * { cursor: none !important; }
+      }
       #cursor-dot { width:8px; height:8px; background:var(--accent-green); border-radius:50%; position:fixed; pointer-events:none; z-index:99999; transform:translate(-50%,-50%); transition:width .2s,height .2s,background .2s; }
       #cursor-ring { width:34px; height:34px; border:2px solid var(--accent-green); border-radius:50%; position:fixed; pointer-events:none; z-index:99998; transform:translate(-50%,-50%); opacity:.65; transition:width .2s,height .2s,border-color .2s,opacity .2s; }
       body.cursor-hover #cursor-dot { width:14px; height:14px; background:var(--accent-blue); }
@@ -84,6 +86,7 @@
       body.cursor-click #cursor-dot { transform:translate(-50%,-50%) scale(.5); }
       .cursor-particle { position:fixed; border-radius:50%; pointer-events:none; z-index:99997; transform:translate(-50%,-50%); animation:pfade .6s ease forwards; }
       @keyframes pfade { 0%{opacity:.9;transform:translate(-50%,-50%) scale(1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(0)} }
+      @media (pointer:coarse) { #cursor-dot, #cursor-ring { display:none !important; } }
 
       /* === GLITCH === */
       .glitch-text { position:relative; display:inline-block; }
@@ -164,26 +167,198 @@
       @keyframes pulse-ring { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.8);opacity:0} }
 
       /* === BACK TO TOP === */
-      #back-to-top { position:fixed; bottom:28px; right:28px; width:44px; height:44px; border-radius:50%; border:none; background:linear-gradient(135deg,var(--accent-green),var(--accent-blue)); color:#fff; cursor:pointer !important; display:flex; align-items:center; justify-content:center; z-index:990; opacity:0; transform:translateY(16px); transition:opacity .3s,transform .3s; box-shadow:0 4px 20px rgba(156,175,136,.4); }
+      #back-to-top { position:fixed; bottom:20px; right:16px; width:40px; height:40px; border-radius:50%; border:none; background:linear-gradient(135deg,var(--accent-green),var(--accent-blue)); color:#fff; cursor:pointer !important; display:flex; align-items:center; justify-content:center; z-index:990; opacity:0; transform:translateY(16px); transition:opacity .3s,transform .3s; box-shadow:0 4px 20px rgba(156,175,136,.4); }
       #back-to-top.visible { opacity:1; transform:translateY(0); }
       #back-to-top:hover { transform:translateY(-4px) scale(1.1) !important; }
+      @media (min-width:768px) { #back-to-top { bottom:28px; right:28px; width:44px; height:44px; } }
 
-      /* === CERT GRID CARDS === */
+      /* === CERT GRID CARDS (legacy) === */
       .cert-card { transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease; cursor:pointer !important; }
       .cert-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,.08); border-color:var(--accent-blue) !important; }
       [data-theme="dark"] .cert-card:hover { box-shadow:0 12px 40px rgba(0,0,0,.3); }
       .cert-icon { transition:transform .25s ease; }
       .cert-card:hover .cert-icon { transform:scale(1.1) rotate(-4deg); }
 
+      /* === CERT ROWS (new compact list) === */
+      .cert-row {
+        display:flex; align-items:center; gap:12px;
+        padding:12px 14px; border-radius:14px;
+        border:1px solid var(--border-color);
+        background:var(--bg-secondary);
+        cursor:pointer !important;
+        transition:background .2s,border-color .2s,transform .2s,box-shadow .2s;
+        position:relative; overflow:hidden;
+      }
+      .cert-row::before {
+        content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+        background:linear-gradient(180deg,var(--accent-green),var(--accent-blue));
+        border-radius:0 2px 2px 0; opacity:0; transition:opacity .25s;
+      }
+      .cert-row:hover { background:var(--bg-surface); border-color:var(--accent-blue); transform:translateX(4px); box-shadow:0 4px 24px rgba(0,0,0,.06); }
+      .cert-row:hover::before { opacity:1; }
+      [data-theme="dark"] .cert-row:hover { box-shadow:0 4px 24px rgba(0,0,0,.25); }
+      .cert-row-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .25s; }
+      .cert-row:hover .cert-row-icon { transform:scale(1.12) rotate(-5deg); }
+      .cert-row-body { flex:1; min-width:0; overflow:hidden; }
+      .cert-row-title { display:block; font-weight:700; font-size:13px; color:var(--text-primary); white-space:normal; overflow:hidden; text-overflow:ellipsis; line-height:1.3; }
+      .cert-row-issuer { display:block; font-size:10px; font-weight:600; color:var(--text-muted); margin-top:1px; }
+      .cert-row-tag { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:3px 8px; border-radius:100px; white-space:nowrap; flex-shrink:0; }
+      .cert-row-arrow { color:var(--text-muted); flex-shrink:0; transition:transform .2s,color .2s; }
+      .cert-row:hover .cert-row-arrow { transform:translateX(3px); color:var(--accent-blue); }
+      .cert-row.hidden-cert { display:none; }
+      /* hide tag on very small screens to save space */
+      @media (max-width:380px) { .cert-row-tag { display:none; } }
+
+      /* === CERT FILTER PILLS === */
+      #cert-filters { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+      #cert-filters::-webkit-scrollbar { display:none; }
+      @media (min-width:480px) { #cert-filters { flex-wrap:wrap; justify-content:center; overflow-x:visible; } }
+      .cert-filter-btn {
+        padding:6px 14px; border-radius:100px; font-size:11px; font-weight:700;
+        border:1px solid var(--border-color); background:var(--bg-secondary);
+        color:var(--text-muted); cursor:pointer !important;
+        transition:all .22s ease; white-space:nowrap; flex-shrink:0;
+      }
+      .cert-filter-btn:hover { border-color:var(--accent-green); color:var(--accent-green); }
+      .cert-filter-btn.active-filter { background:var(--accent-green); border-color:var(--accent-green); color:#fff !important; }
+
+      /* === CERT MODAL — desktop center, mobile bottom-sheet === */
+      .cert-modal-backdrop {
+        position:fixed; inset:0; z-index:99990;
+        background:rgba(0,0,0,0); backdrop-filter:blur(0px);
+        display:flex; align-items:flex-end; justify-content:center; padding:0;
+        pointer-events:none; opacity:0;
+        transition:opacity .3s ease, backdrop-filter .3s ease, background .3s ease;
+      }
+      .cert-modal-backdrop.open {
+        opacity:1; pointer-events:auto;
+        background:rgba(0,0,0,.5); backdrop-filter:blur(8px);
+      }
+      .cert-modal-panel {
+        position:relative; width:100%; max-width:100%;
+        background:var(--bg-secondary);
+        border-radius:24px 24px 0 0;
+        padding:20px 20px 32px;
+        border:1px solid var(--border-color); border-bottom:none;
+        box-shadow:0 -16px 60px rgba(0,0,0,.18);
+        transform:translateY(100%);
+        transition:transform .38s cubic-bezier(.34,1.1,.64,1),opacity .3s ease;
+        opacity:0; max-height:90vh; overflow-y:auto;
+      }
+      .cert-modal-backdrop.open .cert-modal-panel { transform:translateY(0); opacity:1; }
+      /* drag handle */
+      .cert-modal-panel::before { content:''; display:block; width:36px; height:4px; border-radius:100px; background:var(--border-color); margin:0 auto 16px; }
+      .cert-modal-topbar { height:4px; border-radius:100px; margin-bottom:16px; }
+      #cert-modal-close {
+        position:absolute; top:16px; right:16px;
+        width:32px; height:32px; border-radius:50%;
+        border:1px solid var(--border-color); background:var(--bg-surface);
+        color:var(--text-muted); display:flex; align-items:center; justify-content:center;
+        cursor:pointer !important; transition:background .2s,color .2s;
+      }
+      #cert-modal-close:hover { background:var(--accent-blue); color:#fff; border-color:var(--accent-blue); }
+      .cert-modal-cta {
+        display:flex; align-items:center; gap:10px;
+        width:100%; padding:13px 18px; border-radius:14px;
+        background:linear-gradient(135deg,var(--accent-green),var(--accent-blue));
+        color:#fff; font-weight:700; font-size:13px;
+        text-decoration:none; transition:opacity .2s, transform .2s;
+        box-shadow:0 6px 24px rgba(156,175,136,.35);
+      }
+      .cert-modal-cta:hover { opacity:.9; transform:translateY(-2px); }
+      .cert-nav-btn {
+        display:flex; align-items:center; gap:4px;
+        font-size:11px; font-weight:600; color:var(--text-muted);
+        background:none; border:1px solid var(--border-color);
+        padding:6px 12px; border-radius:100px; cursor:pointer !important;
+        transition:all .2s;
+      }
+      .cert-nav-btn:hover { color:var(--accent-blue); border-color:var(--accent-blue); }
+      /* Desktop — centered floating panel */
+      @media (min-width:600px) {
+        .cert-modal-backdrop { align-items:center; padding:20px; }
+        .cert-modal-panel { max-width:440px; border-radius:24px; border-bottom:1px solid var(--border-color); padding:28px; max-height:85vh; transform:translateY(24px) scale(.96); }
+        .cert-modal-panel::before { display:none; }
+        .cert-modal-backdrop.open .cert-modal-panel { transform:translateY(0) scale(1); }
+      }
+
+      /* === MOBILE NAV === */
+      .mobile-nav-drawer {
+        display:none; position:sticky; top:53px; z-index:49;
+        width:100%; background:var(--bg-secondary);
+        border-bottom:1px solid var(--border-color);
+        box-shadow:0 4px 24px rgba(0,0,0,.06);
+        overflow:hidden; max-height:0;
+        transition:max-height .35s cubic-bezier(.4,0,.2,1), box-shadow .3s;
+      }
+      .mobile-nav-drawer.open { max-height:280px; }
+      @media (max-width:767px) { .mobile-nav-drawer { display:block; } }
+      .mobile-nav-link {
+        display:block; padding:12px 16px; border-radius:12px;
+        font-size:15px; font-weight:600; color:var(--text-primary);
+        text-decoration:none; transition:background .2s, color .2s;
+      }
+      .mobile-nav-link:hover { background:var(--bg-surface); color:var(--accent-green); }
+      #dark-toggle-mobile { width:38px; height:22px; background:var(--border-color); border-radius:11px; position:relative; border:none; outline:none; flex-shrink:0; transition:background .3s; }
+      #dark-toggle-mobile.active { background:var(--accent-green); }
+      #dark-toggle-mobile::after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; background:#fff; border-radius:50%; transition:transform .3s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+      #dark-toggle-mobile.active::after { transform:translateX(16px); }
+      #mobile-menu-btn.open .hamburger-line:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+      #mobile-menu-btn.open .hamburger-line:nth-child(2) { opacity:0; transform:scaleX(0); }
+      #mobile-menu-btn.open .hamburger-line:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+
       /* === NOISE TEXTURE === */
       #noise { position:fixed; inset:0; z-index:99994; pointer-events:none; opacity:.03; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"); background-size:200px; }
+
+      /* ===================================================
+         MOBILE PERFORMANCE — semua optimasi di satu tempat
+         Matikan animasi berat, backdrop-blur, dan noise
+         ================================================= */
+      @media (max-width:767px) {
+        /* Matikan noise (GPU-heavy fixed layer) */
+        #noise { display:none !important; }
+
+        /* Matikan semua infinite CSS animations */
+        .animate-blob, .animate-float,
+        .animate-spin-slow, .animate-spin-reverse { animation:none !important; }
+
+        /* Matikan backdrop-blur di seluruh halaman */
+        nav, .cert-modal-backdrop.open,
+        [class*="backdrop-blur"] { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+
+        /* Sembunyikan physics decorative elements agar tidak memakan DOM/layout */
+        #physics-elements { display:none !important; }
+
+        /* Matikan orbit ring & glow blur di hero */
+        .absolute.inset-0.z-0.pointer-events-none { contain:strict; }
+
+        /* Kurangi blur glow blob agar tidak berat di GPU */
+        [class*="blur-"] { filter:none !important; }
+
+        /* Nav backdrop tanpa blur */
+        nav { background-color:var(--bg-secondary) !important; }
+
+        /* Sederhanakan transisi agar tidak lambat */
+        * { transition-duration:.15s !important; }
+        .cert-modal-panel { transition-duration:.25s !important; }
+        .mobile-nav-drawer { transition-duration:.2s !important; }
+
+        /* Hero section: kurangi padding & min-height */
+        #about { min-height:auto !important; padding-top:3rem !important; padding-bottom:3rem !important; }
+
+        /* Matikan skill radar canvas (berat di mobile kecil) */
+        #skill-canvas-wrap { display:none !important; }
+
+        /* Ganti grid skill dengan list sederhana */
+        .grid.grid-cols-2.gap-4.max-w-sm { display:grid; grid-template-columns:1fr 1fr; }
+      }
     </style>
   </head>
   <body
     class="bg-off-white bg-grid-pattern text-dark-gray font-sans antialiased selection:bg-pastel-blue selection:text-dark-gray flex flex-col min-h-screen relative"
   >
     <nav
-      class="w-full py-4 px-8 md:px-16 lg:px-24 flex justify-between items-center border-b border-light-gray/50 sticky top-0 z-50 bg-off-white/80 backdrop-blur-md transition-all duration-300"
+      class="w-full py-3 px-5 md:py-4 md:px-16 lg:px-24 flex justify-between items-center border-b border-light-gray/50 sticky top-0 z-50 bg-off-white/80 backdrop-blur-md transition-all duration-300"
     >
       <a
         href="#"
@@ -191,6 +366,7 @@
       >
         jawanotjava<span class="text-pastel-blue">.</span>
       </a>
+      <!-- Desktop nav -->
       <div class="hidden md:flex gap-8 text-sm font-medium items-center">
         <a href="#about" class="hover:text-sage-green transition-colors">Tentang</a>
         <a href="#projects" class="hover:text-sage-green transition-colors">Proyek</a>
@@ -202,7 +378,29 @@
           <span class="text-xs">🌙</span>
         </div>
       </div>
+      <!-- Mobile: dark toggle + hamburger -->
+      <div class="flex md:hidden items-center gap-3">
+        <div class="flex items-center gap-1">
+          <span class="text-xs">☀️</span>
+          <button id="dark-toggle-mobile" aria-label="Toggle dark mode" style="width:38px;height:22px;background:var(--border-color);border-radius:11px;position:relative;border:none;outline:none;flex-shrink:0;transition:background .3s;"></button>
+          <span class="text-xs">🌙</span>
+        </div>
+        <button id="mobile-menu-btn" aria-label="Buka menu" class="w-9 h-9 flex flex-col items-center justify-center gap-1.5 rounded-xl border" style="border-color:var(--border-color);background:var(--bg-secondary);cursor:pointer !important;">
+          <span class="hamburger-line block w-5 h-0.5 rounded-full transition-all duration-300" style="background:var(--text-primary);"></span>
+          <span class="hamburger-line block w-5 h-0.5 rounded-full transition-all duration-300" style="background:var(--text-primary);"></span>
+          <span class="hamburger-line block w-5 h-0.5 rounded-full transition-all duration-300" style="background:var(--text-primary);"></span>
+        </button>
+      </div>
     </nav>
+    <!-- Mobile nav drawer -->
+    <div id="mobile-nav" class="mobile-nav-drawer">
+      <div class="flex flex-col gap-1 p-5">
+        <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">Tentang</a>
+        <a href="#projects" class="mobile-nav-link" onclick="closeMobileMenu()">Proyek</a>
+        <a href="#certifications" class="mobile-nav-link" onclick="closeMobileMenu()">Sertifikasi</a>
+        <a href="#contact" class="mobile-nav-link" onclick="closeMobileMenu()">Kontak</a>
+      </div>
+    </div>
 
     <!-- Scroll Progress + Custom Cursor -->
     <div id="scroll-progress"></div>
@@ -653,70 +851,161 @@
         </div>
       </section>
 
-<section id="certifications" class="w-full px-8 md:px-16 lg:px-24 py-20 relative" style="background:var(--bg-primary);">
-      <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div class="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-blob" style="background:rgba(169,204,227,0.15);"></div>
-        <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl animate-blob" style="animation-delay:2s;background:rgba(156,175,136,0.15);"></div>
+<!-- ===== CERTIFICATIONS INTERACTIVE ===== -->
+<section id="certifications" class="w-full px-8 md:px-16 lg:px-24 py-16 relative" style="background:var(--bg-primary);">
+  <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl animate-blob" style="background:rgba(169,204,227,0.12);"></div>
+    <div class="absolute bottom-10 right-10 w-80 h-80 rounded-full blur-3xl animate-blob" style="animation-delay:2s;background:rgba(156,175,136,0.12);"></div>
+  </div>
+  <div class="max-w-3xl mx-auto relative z-10">
+    <!-- Header -->
+    <div class="mb-8 text-center" data-aos="fade-up">
+      <p class="font-bold tracking-widest uppercase text-xs mb-2" style="color:var(--accent-green);">Validasi &amp; Keahlian</p>
+      <h2 class="text-3xl md:text-4xl font-bold mb-2">Sertifikasi &amp; <span style="color:var(--accent-blue);">Pelatihan</span></h2>
+      <p class="opacity-50 text-xs">Klik sertifikat untuk detail lengkap</p>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="flex flex-wrap justify-center gap-2 mb-6" data-aos="fade-up" id="cert-filters">
+      <button class="cert-filter-btn active-filter" data-filter="all">Semua <span class="ml-1 text-[10px] font-bold opacity-60">9</span></button>
+      <button class="cert-filter-btn" data-filter="data">📊 Data</button>
+      <button class="cert-filter-btn" data-filter="ai">🤖 AI</button>
+      <button class="cert-filter-btn" data-filter="bisnis">💼 Bisnis</button>
+      <button class="cert-filter-btn" data-filter="riset">🔬 Riset</button>
+    </div>
+
+    <!-- Compact List -->
+    <div class="space-y-2" data-aos="fade-up" data-aos-delay="100" id="cert-list">
+
+      <div class="cert-row" data-category="data bisnis" data-index="0">
+        <div class="cert-row-icon" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="award" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">Data Analyst Camp Batch 1</span>
+          <span class="cert-row-issuer">GrowtHub Indonesia</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);">Data</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
       </div>
-      <div class="max-w-5xl mx-auto relative z-10">
-        <div class="mb-10 text-center" data-aos="fade-up">
-          <p class="font-bold tracking-widest uppercase text-xs mb-2" style="color:var(--accent-green);">Validasi &amp; Keahlian</p>
-          <h2 class="text-3xl md:text-4xl font-bold mb-3">Sertifikasi &amp; <span style="color:var(--accent-blue);">Pelatihan</span></h2>
-          <p class="opacity-60 max-w-2xl mx-auto text-sm">Komitmen saya dalam terus meningkatkan keahlian yang dibuktikan lewat program tervalidasi.</p>
+
+      <div class="cert-row" data-category="bisnis data" data-index="1">
+        <div class="cert-row-icon" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="briefcase" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">DSF 50.0 – Business Analyst</span>
+          <span class="cert-row-issuer">Dibimbing.id</span>
         </div>
-        <div class="flex justify-center mb-8" data-aos="fade-up">
-          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border" style="border-color:var(--accent-green);color:var(--accent-green);background:rgba(156,175,136,0.08);">
-            <i data-lucide="shield-check" class="w-4 h-4"></i> 9 Sertifikat &amp; Pelatihan Terverifikasi
-          </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="award" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">Data Analyst Camp Batch 1</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-green);">GrowtHub Indonesia</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Pelatihan intensif analisis data fundamental menggunakan Microsoft Excel dan RStudio.</p>
-            <a href="CERTIFICATE DATA ANALYST BATCH 1 Ardiansyah Nur Ramadhan.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-blue);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="briefcase" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">DSF 50.0 – Business Analyst</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-green);">Dibimbing.id</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Pelatihan strategi produk dan pemecahan masalah bisnis nyata berbasis data.</p>
-            <a href="71b792b9-de80-42a5-8cdf-fc5c064e5670_copy.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-blue);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="bar-chart-2" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">Intro to Data Analytics</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-green);">RevoU Mini Course</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Sertifikasi pemahaman fundamental metodologi pengolahan data untuk keputusan bisnis.</p>
-            <a href="DAMC_ardiaaww@gmail.com_DAMC-060426-01-1-00321.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-green);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="cpu" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">AI for Business Growth</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-blue);">Hacktiv8</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Workshop penerapan kecerdasan buatan untuk mengakselerasi pertumbuhan bisnis.</p>
-            <a href="Ardiansyah.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-green);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="database" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">Data &amp; Machine Learning</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-blue);">Univ. BSI</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Workshop teknis pemrosesan data tingkat lanjut dan machine learning terapan.</p>
-            <a href="SertifikatDigitalmhs_20260416_084625.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-green);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="code" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">Programming Python</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-blue);">Univ. BSI</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Peningkatan kompetensi Python untuk menyusun skrip analisis data lanjutan.</p>
-            <a href="SertifikatDigitalmhs_20260416_084621.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-blue);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="bot" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">Sistem Cerdas AI</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-green);">Univ. BSI</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Seminar pengenalan dan penerapan AI dalam pengembangan sistem modern.</p>
-            <a href="SertifikatDigitalmhs_20260416_084601.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-blue);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="trending-up" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">Inklusi Pasar Modal</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-green);">Univ. BSI</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Webinar edukasi literasi keuangan dan investasi di pasar modal.</p>
-            <a href="SertifikatDigitalmhs_20260416_084610.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-blue);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-          <div class="cert-card relative p-5 rounded-2xl border overflow-hidden" style="border-color:var(--border-color);background:var(--bg-secondary);">
-            <div class="flex items-start gap-3 mb-3"><div class="cert-icon w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="flask-conical" class="w-5 h-5"></i></div><div class="min-w-0"><h4 class="font-bold text-sm leading-snug" style="color:var(--text-primary);">Peneliti Muda BRIN</h4><span class="text-[10px] font-bold uppercase tracking-wider" style="color:var(--accent-blue);">Univ. BSI</span></div></div>
-            <p class="text-xs mb-3 line-clamp-2" style="color:var(--text-muted);">Kunjungan studi ke fasilitas Badan Riset &amp; Inovasi Nasional (BRIN) Bandung.</p>
-            <a href="SertifikatDigitalmhs_20260416_084617.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-xs font-bold hover:opacity-70 transition-opacity" style="color:var(--accent-green);">Lihat Sertifikat <i data-lucide="arrow-up-right" class="w-3 h-3"></i></a>
-          </div>
-        </div>
+        <span class="cert-row-tag" style="background:rgba(156,175,136,0.15);color:var(--accent-green);">Bisnis</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
       </div>
+
+      <div class="cert-row" data-category="data" data-index="2">
+        <div class="cert-row-icon" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">Intro to Data Analytics</span>
+          <span class="cert-row-issuer">RevoU Mini Course</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);">Data</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
+      </div>
+
+      <div class="cert-row" data-category="ai bisnis" data-index="3">
+        <div class="cert-row-icon" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="cpu" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">AI for Business Growth</span>
+          <span class="cert-row-issuer">Hacktiv8</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(156,175,136,0.15);color:var(--accent-green);">AI</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
+      </div>
+
+      <div class="cert-row" data-category="data ai" data-index="4">
+        <div class="cert-row-icon" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="database" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">Data &amp; Machine Learning</span>
+          <span class="cert-row-issuer">Univ. BSI</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);">Data</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
+      </div>
+
+      <div class="cert-row" data-category="data" data-index="5">
+        <div class="cert-row-icon" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="code" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">Programming Python</span>
+          <span class="cert-row-issuer">Univ. BSI</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(156,175,136,0.15);color:var(--accent-green);">Data</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
+      </div>
+
+      <div class="cert-row" data-category="ai" data-index="6">
+        <div class="cert-row-icon" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="bot" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">Sistem Cerdas AI</span>
+          <span class="cert-row-issuer">Univ. BSI</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);">AI</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
+      </div>
+
+      <div class="cert-row" data-category="bisnis" data-index="7">
+        <div class="cert-row-icon" style="background:rgba(156,175,136,0.15);color:var(--accent-green);"><i data-lucide="trending-up" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">Inklusi Pasar Modal</span>
+          <span class="cert-row-issuer">Univ. BSI</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(156,175,136,0.15);color:var(--accent-green);">Bisnis</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
+      </div>
+
+      <div class="cert-row" data-category="riset" data-index="8">
+        <div class="cert-row-icon" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);"><i data-lucide="flask-conical" class="w-4 h-4"></i></div>
+        <div class="cert-row-body">
+          <span class="cert-row-title">Peneliti Muda BRIN</span>
+          <span class="cert-row-issuer">Univ. BSI</span>
+        </div>
+        <span class="cert-row-tag" style="background:rgba(169,204,227,0.15);color:var(--accent-blue);">Riset</span>
+        <i data-lucide="chevron-right" class="cert-row-arrow w-4 h-4"></i>
+      </div>
+
+    </div>
+    <!-- Count -->
+    <p class="text-center text-xs mt-4 opacity-40" id="cert-count">Menampilkan 9 sertifikat</p>
+  </div>
+</section>
+
+<!-- ===== CERT MODAL ===== -->
+<div id="cert-modal" class="cert-modal-backdrop" aria-modal="true" role="dialog">
+  <div class="cert-modal-panel" id="cert-modal-panel">
+    <button id="cert-modal-close" aria-label="Tutup modal">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+    <!-- Decorative top bar -->
+    <div id="cert-modal-bar" class="cert-modal-topbar"></div>
+    <!-- Icon + header -->
+    <div class="flex items-center gap-4 mb-5">
+      <div id="cert-modal-icon" class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-lg"></div>
+      <div>
+        <h3 id="cert-modal-title" class="font-extrabold text-lg leading-tight" style="color:var(--text-primary);"></h3>
+        <p id="cert-modal-issuer" class="text-xs font-bold uppercase tracking-wider mt-0.5" style="color:var(--accent-green);"></p>
+      </div>
+    </div>
+    <p id="cert-modal-desc" class="text-sm leading-relaxed mb-6" style="color:var(--text-muted);"></p>
+    <div id="cert-modal-tags" class="flex flex-wrap gap-2 mb-6"></div>
+    <a id="cert-modal-link" href="#" target="_blank" rel="noopener"
+       class="cert-modal-cta">
+      <i data-lucide="file-text" class="w-4 h-4"></i>
+      Buka Sertifikat
+      <i data-lucide="arrow-up-right" class="w-4 h-4 ml-auto"></i>
+    </a>
+    <!-- Prev / Next -->
+    <div class="flex items-center justify-between mt-4">
+      <button id="cert-prev" class="cert-nav-btn"><i data-lucide="chevron-left" class="w-4 h-4"></i> Sebelumnya</button>
+      <span id="cert-modal-num" class="text-xs opacity-40"></span>
+      <button id="cert-next" class="cert-nav-btn">Berikutnya <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+    </div>
+  </div>
+</div>
+
     </main>
     <footer
       id="contact"
@@ -782,6 +1071,30 @@
       lucide.createIcons();
       document.getElementById("year").textContent = new Date().getFullYear();
 
+      // Mobile hamburger
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileNav = document.getElementById('mobile-nav');
+      function closeMobileMenu() {
+        mobileMenuBtn.classList.remove('open');
+        mobileNav.classList.remove('open');
+      }
+      mobileMenuBtn && mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.classList.toggle('open');
+        mobileNav.classList.toggle('open');
+      });
+
+      // Sync mobile dark toggle with desktop
+      const mobileDarkToggle = document.getElementById('dark-toggle-mobile');
+      const desktopDarkToggle = document.getElementById('dark-toggle');
+      function syncMobileDarkToggle(isDark) {
+        if (mobileDarkToggle) mobileDarkToggle.classList.toggle('active', isDark);
+      }
+      mobileDarkToggle && mobileDarkToggle.addEventListener('click', () => {
+        desktopDarkToggle && desktopDarkToggle.click();
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        syncMobileDarkToggle(isDark);
+      });
+
       // Skill bars animation on scroll
       const skillBars = document.querySelectorAll('.skill-bar');
       const skillObserver = new IntersectionObserver((entries) => {
@@ -791,8 +1104,10 @@
       }, { threshold: 0.4 });
       skillBars.forEach(b => skillObserver.observe(b));
 
-      // Physics Interactive Hero Init
+      // Physics Interactive Hero Init — SKIP on mobile/touch devices
+      const isMobile = window.matchMedia('(max-width:767px)').matches || navigator.maxTouchPoints > 1;
       const initPhysics = () => {
+        if (isMobile) return; // skip heavy physics engine on mobile
         const section = document.getElementById('about');
         const items = document.querySelectorAll('.physics-item');
         if (!section || items.length === 0) return;
@@ -972,7 +1287,7 @@
       };
 
       document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initPhysics, 200);
+        if (!isMobile) setTimeout(initPhysics, 200); // skip on mobile
         // interactive.js handles cursor, typewriter, glitch, stats, tilt, dark mode, konami
         initSentimentWidget();
         initEcoPrototype();
@@ -1140,6 +1455,74 @@
            });
         });
       };
+
+      // ======= CERT INTERACTIVE LIST + MODAL =======
+      const CERTS = [
+        { title:'Data Analyst Camp Batch 1', issuer:'GrowtHub Indonesia', desc:'Pelatihan intensif analisis data fundamental menggunakan Microsoft Excel dan RStudio. Program bootcamp terstruktur dengan studi kasus nyata.', tags:['Data Analytics','Excel','RStudio'], file:'CERTIFICATE DATA ANALYST BATCH 1 Ardiansyah Nur Ramadhan.pdf', icon:'📊', accent:'blue' },
+        { title:'DSF 50.0 – Business Analyst', issuer:'Dibimbing.id', desc:'Pelatihan strategi produk dan pemecahan masalah bisnis nyata berbasis data. Fokus pada decision making, product strategy, dan data storytelling.', tags:['Business Analyst','Strategy','Data'], file:'71b792b9-de80-42a5-8cdf-fc5c064e5670_copy.pdf', icon:'💼', accent:'green' },
+        { title:'Intro to Data Analytics', issuer:'RevoU Mini Course', desc:'Sertifikasi fundamental metodologi data untuk keputusan bisnis. Mencakup SQL, spreadsheet, dan dasar visualisasi data.', tags:['Data Analytics','SQL','Visualisasi'], file:'DAMC_ardiaaww@gmail.com_DAMC-060426-01-1-00321.pdf', icon:'📈', accent:'blue' },
+        { title:'AI for Business Growth', issuer:'Hacktiv8', desc:'Workshop penerapan AI untuk mengakselerasi pertumbuhan bisnis. Mempelajari tools AI terkini dan implementasinya di dunia industri.', tags:['AI','Machine Learning','Bisnis'], file:'Ardiansyah.pdf', icon:'🤖', accent:'green' },
+        { title:'Data & Machine Learning', issuer:'Univ. BSI', desc:'Workshop teknis machine learning terapan: supervised learning, preprocessing, dan evaluasi model.', tags:['Machine Learning','Python','Data Science'], file:'SertifikatDigitalmhs_20260416_084625.pdf', icon:'🧠', accent:'blue' },
+        { title:'Programming Python', issuer:'Univ. BSI', desc:'Kompetensi Python untuk analisis data lanjutan: OOP, pandas, numpy, dan visualisasi.', tags:['Python','OOP','Data'], file:'SertifikatDigitalmhs_20260416_084621.pdf', icon:'🐍', accent:'green' },
+        { title:'Sistem Cerdas AI', issuer:'Univ. BSI', desc:'Seminar penerapan AI dalam sistem modern: neural network, use-cases, dan etika AI.', tags:['AI','Neural Network','Seminar'], file:'SertifikatDigitalmhs_20260416_084601.pdf', icon:'⚡', accent:'blue' },
+        { title:'Inklusi Pasar Modal', issuer:'Univ. BSI', desc:'Webinar literasi keuangan dan investasi: saham, obligasi, reksa dana, dan analisis fundamental.', tags:['Finance','Investasi','Literasi'], file:'SertifikatDigitalmhs_20260416_084610.pdf', icon:'📉', accent:'green' },
+        { title:'Peneliti Muda BRIN', issuer:'Univ. BSI', desc:'Kunjungan studi ke BRIN Bandung. Eksplorasi lab riset mutakhir dan diskusi bersama peneliti nasional.', tags:['Riset','BRIN','Inovasi'], file:'SertifikatDigitalmhs_20260416_084617.pdf', icon:'🔬', accent:'blue' },
+      ];
+      let certCurrentIndex = 0;
+      const certModal = document.getElementById('cert-modal');
+      function openCertModal(idx) {
+        certCurrentIndex = idx;
+        const c = CERTS[idx];
+        const isBlue = c.accent === 'blue';
+        document.getElementById('cert-modal-title').textContent = c.title;
+        document.getElementById('cert-modal-issuer').textContent = c.issuer;
+        document.getElementById('cert-modal-desc').textContent = c.desc;
+        const iconEl = document.getElementById('cert-modal-icon');
+        iconEl.textContent = c.icon;
+        iconEl.style.background = isBlue ? 'rgba(169,204,227,0.18)' : 'rgba(156,175,136,0.18)';
+        document.getElementById('cert-modal-bar').style.background = 'linear-gradient(90deg,var(--accent-green),var(--accent-blue))';
+        document.getElementById('cert-modal-link').href = c.file;
+        document.getElementById('cert-modal-num').textContent = (idx+1) + ' / ' + CERTS.length;
+        const color = isBlue ? 'var(--accent-blue)' : 'var(--accent-green)';
+        const bg = isBlue ? 'rgba(169,204,227,0.15)' : 'rgba(156,175,136,0.15)';
+        document.getElementById('cert-modal-tags').innerHTML = c.tags.map(t =>
+          '<span style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px;background:' + bg + ';color:' + color + ';">' + t + '</span>'
+        ).join('');
+        certModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        lucide.createIcons();
+      }
+      function closeCertModal() {
+        certModal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      document.getElementById('cert-modal-close').addEventListener('click', closeCertModal);
+      certModal.addEventListener('click', e => { if (e.target === certModal) closeCertModal(); });
+      document.getElementById('cert-prev').addEventListener('click', () => openCertModal((certCurrentIndex - 1 + CERTS.length) % CERTS.length));
+      document.getElementById('cert-next').addEventListener('click', () => openCertModal((certCurrentIndex + 1) % CERTS.length));
+      document.addEventListener('keydown', e => {
+        if (!certModal.classList.contains('open')) return;
+        if (e.key === 'Escape') closeCertModal();
+        if (e.key === 'ArrowRight') openCertModal((certCurrentIndex+1) % CERTS.length);
+        if (e.key === 'ArrowLeft') openCertModal((certCurrentIndex-1+CERTS.length) % CERTS.length);
+      });
+      document.querySelectorAll('.cert-row').forEach(row => {
+        row.addEventListener('click', () => openCertModal(parseInt(row.getAttribute('data-index'))));
+      });
+      document.querySelectorAll('.cert-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.cert-filter-btn').forEach(b => b.classList.remove('active-filter'));
+          btn.classList.add('active-filter');
+          const f = btn.getAttribute('data-filter');
+          let visible = 0;
+          document.querySelectorAll('.cert-row').forEach(row => {
+            const show = f === 'all' || row.getAttribute('data-category').includes(f);
+            row.classList.toggle('hidden-cert', !show);
+            if (show) visible++;
+          });
+          document.getElementById('cert-count').textContent = 'Menampilkan ' + visible + ' sertifikat';
+        });
+      });
     </script>
     <!-- Interactive Features -->
     <script src="interactive.js"></script>

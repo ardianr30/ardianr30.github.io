@@ -338,15 +338,21 @@ function initBackToTop() {
 
 // ─── INIT ALL ────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  const isMobileDevice = window.matchMedia('(max-width:767px)').matches || navigator.maxTouchPoints > 1;
+
   initScrollProgress();
-  initCustomCursor();
-  initTypewriter();
-  initGlitch();
   initDarkMode();
   initStatsCounter();
-  initCardTilt();
-  initMagneticButtons();
-  initKonamiCode();
   initBackToTop();
-  setTimeout(initSkillRadar, 300);
+  initTypewriter(); // lightweight — keep on mobile
+
+  if (!isMobileDevice) {
+    // Heavy / mouse-only features: skip on mobile
+    initCustomCursor();       // rAF loop per frame — skip
+    initGlitch();             // interval timer — skip
+    initCardTilt();           // mousemove per card — skip
+    initMagneticButtons();    // mousemove — skip
+    initKonamiCode();         // keyboard only — skip
+    setTimeout(initSkillRadar, 300); // canvas draw + rAF — skip
+  }
 });
